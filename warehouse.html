@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+</head>
+<body>
+    <h2>Warehouse Dashboard</h2>
+
+    <!-- List of Stored Items -->
+    <div id="warehouseItems">
+        <h3>Items in Storage</h3>
+        <table border="1" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Batch Number</th>
+                </tr>
+            </thead>
+            <tbody id="itemList">
+                <!-- Items will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Scan Section -->
+    <div id="scanSection" style="margin-top: 20px;">
+        <h3>Scan Batch Number</h3>
+    <input type="text" id="scanInput" placeholder="Enter Batch Number" />
+    <button onclick="scanItem()">Scan</button>
+
+    <div id="scannedItemDetails">
+        <!-- Scanned product details will be displayed here -->
+    </div>
+
+    <div id="barcodeContainer">
+        <!-- Barcode will be displayed here -->
+        <h3>Barcode : </h3>
+        <svg id="barcode"></svg>
+    </div>
+    </div>
+
+    <script src="warehouse.js"></script>
+</body>
+</html>
