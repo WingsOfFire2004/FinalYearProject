@@ -28,6 +28,7 @@ function displayWarehouseItems(items) {
     itemList.innerHTML = ""; // Clear existing rows
 
     items.forEach((item) => {
+        console.log("Item batch number:", item.batch_number);
         const row = document.createElement("tr");
 
         // Display product details (without barcode)
@@ -40,15 +41,64 @@ function displayWarehouseItems(items) {
         const batchNumberCell = document.createElement("td");
         batchNumberCell.textContent = item.batch_number;
 
+        const statusCell = document.createElement("td");
+        statusCell.textContent = item.status;
+        
+       // Create action button cell
+       const actionButtonCell = document.createElement("td");
+       const actionButton = document.createElement("button");
+       actionButton.textContent = "Pack for Dispatch";
+
+       // Add onclick handler for the button
+       actionButton.onclick = () => packForDispatch(item.batch_number);
+
+       // Append the button to the action cell
+       actionButtonCell.appendChild(actionButton);
+
         // Append all cells to the row
         row.appendChild(productNameCell);
         row.appendChild(quantityCell);
         row.appendChild(batchNumberCell);
-
+        row.appendChild(statusCell);
+        row.appendChild(actionButtonCell);
+        
         // Append the row to the table
         itemList.appendChild(row);
     });
 }
+
+// refresh the status of warehouse items table.
+function packForDispatch(batchNumber) {
+    console.log("Packing batch:", batchNumber);
+    fetch("http://localhost:3000/pack-dispatch", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ batchNumber }),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Failed to update batch status");
+            }
+            return response.json();
+        })
+        .then((data) => {
+            if (data.success) {
+                alert(`Batch ${batchNumber} packed for dispatch successfully!`);
+                fetchWarehouseItems(); // Refresh the warehouse items table
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch((error) => {
+            console.error("Error packing batch:", error);
+            alert("Error packing batch");
+        });
+}
+
+
+
 
 
 // Handle manual scanning and render barcode
@@ -72,7 +122,7 @@ function scanItem() {
             if (data.success) {
                 // Display the scanned item details and generate the barcode
                 displayScannedItem(data.product);
-                generateBarcode(data.product.batch_number); // Generate barcode here
+                
             } else {
                 alert("Product not found");
             }
@@ -98,7 +148,11 @@ function displayScannedItem(product) {
         <p>Quantity: ${product.quantity}</p>
         <p>Batch Number: ${product.batch_number}</p>
         <p>Date: ${product.date}</p>
+        <h3><strong>Generated Barcode: </strong></h3>
     `;
+
+    generateBarcode(product.batch_number); // Generate barcode here
+
 }
 
 // Function to generate and display barcode
@@ -110,6 +164,20 @@ function generateBarcode(batchNumber) {
             format: "CODE128",
             displayValue: true
         });
+
+        
+    const packButton = document.createElement("button");
+    packButton.textContent = "Pack for Dispatch";
+    
+    // Add the onclick handler to call the packForDispatch function
+    packButton.onclick = () => packForDispatch(batchNumber);
+    
+    const barcodeContainer = document.getElementById("barcodeContainer");
+    // Append the button below the product details
+    const breaking = document.createElement("br");
+    barcodeContainer.appendChild(breaking);
+    barcodeContainer.appendChild(packButton);
+
     } catch (error) {
         console.error("Barcode rendering error:", error);
     }
