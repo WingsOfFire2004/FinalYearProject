@@ -29,10 +29,12 @@ function generateBatchNumber() {
 
 // API to handle form submission
 app.post("/add-food", (req, res) => {
+    console.log("Add-food API called"); // Add this log
     const { productName, quantity, date } = req.body;
     const batchNumber = generateBatchNumber();
 
     const query = "INSERT INTO food_grains (product_name, quantity, date, batch_number, status) VALUES (?, ?, ?, ?, ?)";
+    const logQuery = "INSERT INTO stage_logs (batch_number, stage) VALUES (?, ?)";
     const initialStatus = "Order Created";
     db.query(query, [productName, quantity, date, batchNumber, initialStatus], (err, result) => {
         if (err) {
@@ -40,7 +42,15 @@ app.post("/add-food", (req, res) => {
             return res.status(500).send({ success: false, message: "Error storing data" });
         }
 
-        res.json({ success: true, batchNumber });
+        // Log the initial stage in stage_logs
+        db.query(logQuery, [batchNumber, initialStatus], (logErr) => {
+            if (logErr) {
+                console.error("Error logging stage:", logErr);
+                return res.status(500).send({ success: false, message: "Error logging stage" });
+            }
+            console.log("Initial stage logged successfully in stage_logs.");
+            res.json({ success: true, batchNumber });
+        });
     });
 });
 
@@ -81,6 +91,8 @@ app.get("/product-details/:batchNumber", (req, res) => {
 // API to update batch status to "Packed for Dispatch"
 
 app.post("/pack-dispatch", (req, res) => {
+    
+    console.log("Pack-dispatch API called"); // Add this log
     const { batchNumber } = req.body;
 
     if (!batchNumber) {
@@ -89,8 +101,10 @@ app.post("/pack-dispatch", (req, res) => {
     console.log(`Received request to update batch ${batchNumber} status to "Packed for Dispatch"`);  // Log received batch number
 
     const query = "UPDATE food_grains SET status = ?, created_at = NOW() WHERE batch_number = ?";
+    const logQuery = "INSERT INTO stage_logs (batch_number, stage) VALUES (?, ?)";
     const newStatus = "Packed for Dispatch";
 
+    
     db.query(query, [newStatus, batchNumber], (err, result) => {
         if (err) {
             console.error("Error updating batch status:", err);
@@ -101,8 +115,36 @@ app.post("/pack-dispatch", (req, res) => {
             console.log(`No batch found with batch number ${batchNumber}`);  // Log no result scenario
             return res.status(404).send({ success: false, message: "Batch not found" });
         }
-        console.log(`Batch ${batchNumber} status updated successfully to "Packed for Dispatch"`);
+        console.log("Batch status updated successfully. Logging stage...");
+        // Log the status update in stage_logs table
+        db.query(logQuery, [batchNumber, newStatus], (logErr) => {
+            if (logErr) {
+                console.error("Error logging stage:", logErr);
+                return res.status(500).send({ success: false, message: "Error logging stage" });
+            }
+        console.log("Stage logged successfully in stage_logs.");
         res.send({ success: true, message: `Batch ${batchNumber} updated to "${newStatus}"` });
+        });
+    });
+});
+
+
+// Fetch the stage history for a specific batch
+app.get("/batch-history/:batchNumber", (req, res) => {
+    const { batchNumber } = req.params;
+
+    const query = "SELECT stage, timestamp FROM stage_logs WHERE batch_number = ? ORDER BY timestamp";
+    db.query(query, [batchNumber], (err, results) => {
+        if (err) {
+            console.error("Error fetching batch history:", err);
+            return res.status(500).send({ success: false, message: "Error fetching batch history" });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send({ success: false, message: "No history found for the batch" });
+        }
+
+        res.send({ success: true, history: results });
     });
 });
 

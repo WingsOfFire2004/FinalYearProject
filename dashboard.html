@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracking Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .dashboard {
+            width: 80%;
+            margin: auto;
+        }
+        .batch-item {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .batch-item h3 {
+            margin-bottom: 10px;
+        }
+        .status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .status div {
+            flex: 1;
+            text-align: center;
+        }
+        .current-stage {
+            color: green;
+            font-weight: bold;
+        }
+        .timestamp {
+            color: gray;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h1>Order Tracking Dashboard</h1>
+
+        <!-- Input section for batch number -->
+        <div id="inputSection">
+            <label for="batchInput">Enter Batch Number:</label>
+            <input type="text" id="batchInput" placeholder="Enter Batch Number">
+            <button onclick="handleFetchBatch()">Track</button>
+        </div>
+
+        <div id="batchDetails">
+            <!-- Dynamic content will be added here -->
+        </div>
+
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
