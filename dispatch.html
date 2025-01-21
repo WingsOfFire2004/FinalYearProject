@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dispatch Page</title>
+</head>
+<body>
+    <h1>Dispatch Batches</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Batch Number</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Vehicle Number</th>
+                <th>Driver Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="dispatchList">
+            <!-- Batches will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script src="dispatch.js"></script>
+    <script>
+        fetchDispatchBatches(); // Initialize the page
+    </script>
+</body>
+</html>
