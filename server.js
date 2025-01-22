@@ -195,7 +195,7 @@ app.post("/dispatch-batch", (req, res) => {
 // API to fetch all in-transit items
 
 app.get("/in-transit-items", (req, res) => {
-    const query = "SELECT * FROM food_grains WHERE status = 'In Transit' OR status = 'Arrived at Hub'";
+    const query = "SELECT * FROM food_grains WHERE status = 'In Transit' OR status = 'Arrived at Hub' OR status='Out for Delivery' OR status = 'Delayed at Hub' OR status = 'Delivery Attempted' OR status = 'Delivered'";
     db.query(query, (err, results) => {
         if (err) {
             console.error("Error fetching warehouse items:", err);
@@ -248,6 +248,90 @@ app.post("/arrive-at-hub", (req, res) => {
         });
     //}, 10000); // 10 seconds delay
 });
+
+
+// API to simulate out for delivery at regional hub
+app.post("/out-for-delivery", (req, res) => {
+    const { batchNumber, driverName,  phoneNumber} = req.body;
+
+    if (!batchNumber || !driverName || !phoneNumber) {
+        return res.status(400).send({ success: false, message: "Batch number, vehicle number, and driver name are required" });
+    }
+
+
+    // Simulate a random delay (30% chance of delay)
+    const delayChance = Math.random() < 0.3;
+    const status = delayChance ? "Delivery Attempted" : "Out for Delivery";
+
+    const updateQuery = "UPDATE food_grains SET status = ?, delivery_driver_name = ?, delivery_phone_number = ?, created_at = NOW() WHERE batch_number = ?";
+    const logQuery = "INSERT INTO stage_logs (batch_number, stage, timestamp) VALUES (?, ?, NOW())";
+
+    // setTimeout(() => {
+    //     // Update status in the food_grains table
+        db.query(updateQuery, [status, driverName, phoneNumber, batchNumber], (err, result) => {
+            if (err) {
+                console.error("Error updating batch status:", err);
+                return res.status(500).send({ success: false, message: "Error updating batch status" });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).send({ success: false, message: "Batch not found" });
+            }
+
+            // Log the event
+            const logMessage = delayChance
+                ? `${status} - FPS closed`
+                : status;
+
+            db.query(logQuery, [batchNumber, logMessage], (logErr) => {
+                if (logErr) {
+                    console.error("Error logging stage:", logErr);
+                    return res.status(500).send({ success: false, message: "Error logging stage" });
+                }
+
+                res.send({ success: true, message: `Batch ${batchNumber} ${status}`, batchNumber });
+            });
+        });
+    //}, 10000); // 10 seconds delay
+});
+
+
+// API to simulate Delivered
+app.post("/delivered", (req, res) => {
+    const { batchNumber} = req.body;
+
+    if (!batchNumber) {
+        return res.status(400).send({ success: false, message: "Batch number required" });
+    }
+
+    const status = "Delivered";
+    const updateQuery = "UPDATE food_grains SET status = ?, created_at = NOW() WHERE batch_number = ?";
+    const logQuery = "INSERT INTO stage_logs (batch_number, stage, timestamp) VALUES (?, ?, NOW())";
+
+    // setTimeout(() => {
+    //     // Update status in the food_grains table
+        db.query(updateQuery, [status, batchNumber], (err, result) => {
+            if (err) {
+                console.error("Error updating batch status:", err);
+                return res.status(500).send({ success: false, message: "Error updating batch status" });
+            }
+
+            if (result.affectedRows === 0) {
+                return res.status(404).send({ success: false, message: "Batch not found" });
+            }
+
+            db.query(logQuery, [batchNumber, status], (logErr) => {
+                if (logErr) {
+                    console.error("Error logging stage:", logErr);
+                    return res.status(500).send({ success: false, message: "Error logging stage" });
+                }
+
+                res.send({ success: true, message: `Batch ${batchNumber} ${status}`, batchNumber });
+            });
+        });
+    //}, 10000); // 10 seconds delay
+});
+
 
 
 // Start server

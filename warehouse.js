@@ -48,6 +48,10 @@ function displayWarehouseItems(items) {
        const actionButtonCell = document.createElement("td");
        const actionButton = document.createElement("button");
        actionButton.textContent = "Pack for Dispatch";
+       // Check the item's status to determine if the button should be disabled
+        if (item.status === "Packed for Dispatch") {
+            actionButton.disabled = true; // Disable the button if status is 'Delivered'
+        }
 
        // Add onclick handler for the button
        actionButton.onclick = () => packForDispatch(item.batch_number);
