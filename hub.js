@@ -1,3 +1,64 @@
+// Connect to Blockchain
+async function connectBlockchain() {
+    if (window.ethereum) {
+        window.web3 = new Web3(window.ethereum);
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+    } else {
+        console.error("Ethereum provider not found. Install MetaMask!");
+        return;
+    }
+
+    const contractAddress = "0x0D2a48aD6dF7565078B2611EFcb6B94311BDDde6";
+    const abi = [
+        {
+            "inputs": [],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "inputs": [
+                {"internalType": "string", "name": "_productName", "type": "string"},
+                {"internalType": "uint256", "name": "_quantity", "type": "uint256"},
+                {"internalType": "string", "name": "_date", "type": "string"}
+            ],
+            "name": "addFoodGrain",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {"internalType": "uint256", "name": "batchNumber", "type": "uint256"},
+                {"internalType": "string", "name": "newStatus", "type": "string"}
+            ],
+            "name": "updateStatus",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getTotalFoodGrains",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "stateMutability": "view",
+            "type": "function"
+        }
+    ];
+
+    window.contract = new web3.eth.Contract(abi, contractAddress);
+}
+
+// Function to update status on Blockchain
+async function updateBlockchainStatus(batchNumber, status) {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        await window.contract.methods.updateStatus(batchNumber, status).send({ from: accounts[0] });
+        console.log(`Blockchain updated: ${batchNumber} -> ${status}`);
+    } catch (error) {
+        console.error("Blockchain update error:", error);
+    }
+}
+
 // Fetch and display all "In Transit" batches
 function fetchInTransitBatches() {
     fetch("http://localhost:3000/in-transit-items") // Update API endpoint as needed
@@ -60,10 +121,14 @@ function simulateArrival(batchNumber) {
         body: JSON.stringify({ batchNumber }),
     })
         .then((response) => response.json())
-        .then((data) => {
+        .then(async (data) => {
             if (data.success) {
-                alert(`Batch ${batchNumber} ${data.message}`);
+                await updateBlockchainStatus(batchNumber, "Arrived at Hub");
+                alert(`Status updated in blockchain`);
                 fetchInTransitBatches(); // Refresh the list
+                alert(`Batch ${batchNumber} ${data.message}`);
+                const updatedStatus = data.status || await getBatchStatus(batchNumber);
+                updateStatus(batchNumber, updatedStatus);
             } else {
                 alert(`Error: ${data.message}`);
             }
@@ -72,6 +137,38 @@ function simulateArrival(batchNumber) {
             console.error("Error simulating arrival:", error);
             //Add code to enable the disabled button
         });
+}
+
+async function updateStatus(batchNumber, status) {
+    try {
+        const response = await fetch("http://localhost:3000/update-status", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ batchNumber, status }),
+        });
+
+        const data = await response.json();
+        alert(data.message); // Show success message
+
+        if (data.success) {
+            location.reload(); // Refresh the page to update the status
+        }
+    } catch (error) {
+        console.error("Error updating status:", error);
+    }
+}
+// ✅ Function to fetch the latest status from the server
+async function getBatchStatus(batchNumber) {
+    try {
+        const response = await fetch(`http://localhost:3000/batch-status/${batchNumber}`);
+        const data = await response.json();
+        return data.status;
+    } catch (error) {
+        console.error("Error fetching batch status:", error);
+        return "Unknown"; // Default fallback
+    }
 }
 
 // Simulate out for Delivery Details
@@ -89,10 +186,14 @@ function simulateOutForDelivery(batchNumber, driverName, phoneNumber) {
         body: JSON.stringify({ batchNumber, driverName, phoneNumber }),
     })
         .then((response) => response.json())
-        .then((data) => {
+        .then(async (data) => {
             if (data.success) {
-                alert(`Batch ${batchNumber} ${data.message}`);
+                await updateBlockchainStatus(batchNumber, "Delivery Attempted");
+                alert(`Status updated in blockchain`);
                 fetchInTransitBatches(); // Refresh the list
+                alert(`Batch ${batchNumber} ${data.message}`);
+                const updatedStatus = data.status || await getBatchStatus(batchNumber);
+                updateStatus(batchNumber, updatedStatus);
             } else {
                 alert(`Error: ${data.message}`);
             }
@@ -113,10 +214,12 @@ function simulateDelivered(batchNumber) {
         body: JSON.stringify({ batchNumber }),
     })
         .then((response) => response.json())
-        .then((data) => {
+        .then(async (data) => {
             if (data.success) {
-                alert(`Batch ${batchNumber} ${data.message}`);
+                await updateBlockchainStatus(batchNumber, "Delivered");
+                alert(`Status updated in blockchain`);
                 fetchInTransitBatches(); // Refresh the list
+                alert(`Batch ${batchNumber} ${data.message}`);
             } else {
                 alert(`Error: ${data.message}`);
             }
@@ -130,4 +233,4 @@ function simulateDelivered(batchNumber) {
 
 
 // Initialize the page
-fetchInTransitBatches();
+window.addEventListener("load", connectBlockchain);

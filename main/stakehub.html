@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stakeholder Dashboard</title>
+    <style>
+        /* General Body Settings */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: #004080; /* Dark blue background */
+            color: white;
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .header-content h1 {
+            margin: 0;
+            font-size: 36px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: #0056b3; /* Lighter blue on hover */
+            border-radius: 5px;
+        }
+
+
+        .stakeholder-info {
+            position: relative;
+        }
+
+        #stake-username {
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .logout-button {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .logout-button:hover {
+            background-color: #c82333;
+        }
+
+        /* Main Content Styles */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around; /* Space around the buttons */
+            width: 100%;
+            max-width: 1200px; /* Adjust max width as needed */
+        }
+
+        .status-button {
+            text-decoration: none;
+            margin: 0 10px; /* Adjust margin to bring buttons closer */
+        }
+
+        .button-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            height: 300px;
+            background: #004080; /* Semi-transparent background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px #002d5b;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+            transition: box-shadow 0.3s, background 0.3s;
+        }
+
+        .button-content:hover {
+            background: #001a33; /* Darker background on hover */
+            box-shadow: 0 6px 12px #004080;
+        }
+
+        .button-content img {
+            width: 100%;
+            height: 70%;
+            object-fit: cover;
+        }
+
+        .button-text {
+            font-size: 24px;
+            padding: 10px;
+        }
+
+        /* Align buttons to left and right */
+        .status-button.left .button-content {
+            align-self: flex-start;
+        }
+
+        .status-button.right .button-content {
+            align-self: flex-end;
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: #004080; /* Dark blue background */
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>SupplyChainX</h1>
+            <nav class="nav-links">
+                <a href="stakehub.html">Home</a>
+                <div class="stake-username">
+                    <a href="home.html" class="logout">Logout</a>
+                    <span>Stakeholder Name</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="button-container">
+            <a href="/hub.html" class="status-button left">
+                <div class="button-content">
+                    <img src="./images/form.jpg" alt="Update Status">
+                    <div class="button-text">Manage Regional Hub</div>
+                </div>
+            </a>
+            <a href="/dashboard.html" class="status-button right">
+                <div class="button-content">
+                    <img src="./images/track.jpeg" alt="Track Status">
+                    <div class="button-text">Track Status</div>
+                </div>
+            </a>
+        </div>
+    </main>
+    <footer>
+        <p>© 2024 SupplyChainX. All rights reserved.</p>
+    </footer>
+    <script>
+        // stake.js
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const stakeUsernameElement = document.getElementById('stake-username');
+            
+            // Example username, replace with actual logic to get the logged-in stakeholder username
+            const username = 'StakeholderName'; 
+            stakeUsernameElement.textContent = username;
+        });
+        </script>
+</body>
+</html>

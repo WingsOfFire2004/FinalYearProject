@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Home Page</title>
+    <style>
+        /* General Body and Font Settings */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('./images/food.jpg'); /* Replace with your background image path */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: #fff; /* White text for better contrast */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Ensures the footer stays at the bottom */
+        }
+
+        /* Website Name Styles */
+        .website-name {
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+            padding: 20px;
+            background-color: rgba(0, 0, 128, 0.7); /* Semi-transparent navy blue */
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 128, 0.8); /* Semi-transparent navy blue */
+            padding: 10px 20px;
+            position: relative;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-link:hover {
+            background-color: #007bff; /* Blue on hover */
+            border-radius: 5px;
+        }
+
+        .login-button {
+            position: absolute;
+            right: 20px;
+            font-size: 16px;
+            text-decoration: none;
+            color: white;
+            background-color: #004080; /* Dark blue background */
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .login-button:hover {
+            background-color: #0059b3; /* Lighter blue on hover */
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            margin: 40px auto;
+            border-radius: 10px;
+            max-width: 800px; /* Reduced width for the main content */
+            width: 90%;
+            flex-grow: 1; /* Ensures the main content expands to fill available space */
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .content-image img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .content-description {
+            text-align: center;
+            max-width: 400px;
+            
+        }
+
+        .content-description h2 {
+            font-size: 28px;
+            color: #004080; /* Dark blue */
+        }
+
+        .content-description p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .main-button {
+            font-size: 18px;
+            background-color: #004080; /* Dark blue */
+            color: white;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            margin: 20px auto; /* Centers the button and adds spacing */
+            height: 50px; /* Set height of the button */
+            width: 200px; /* Set width of the button */
+            border-radius: 25px; /* Rounded corners */
+            line-height: 50px; /* Align text vertically within the button */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for added effect */
+            transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition for hover effect */
+        }
+
+        .main-button:hover {
+            background-color: #0059b3; /* Lighter blue on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Darker shadow on hover for depth effect */
+        }
+
+
+        /* Footer Styles */
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 128, 0.8); /* Semi-transparent navy blue */
+            color: white;
+            width: 100%;
+            margin-top: auto; /* Ensures footer stays at the bottom */
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <!-- Website Name Row -->
+        <div class="website-name">SupplyChainX</div>
+
+        <!-- Navigation Links Row -->
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="home.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact Us</a>
+            </div>
+            <a href="index.html" class="login-button"><i class="fas fa-sign-in-alt"></i> Login</a>
+        </nav>
+    </header>
+
+    <!-- Main Content with Image and Description -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="content-image">
+                <img src="./images/food.jpeg" alt="Description Image"> <!-- Replace with your image path -->
+            </div>
+            <div class="content-description">
+                <h2>Track your Supply chain</h2>
+                <p>To track the current location at which the supply chain item is currently at, login below.</p>
+                <a href="index.html" class="main-button">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 . All rights reserved.</p>
+    </footer>
+</body>
+</html>

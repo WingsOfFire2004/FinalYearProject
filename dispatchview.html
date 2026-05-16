@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-size: cover;
+        background-position: center;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensures the footer stays at the bottom */
+    }
+
+    /* Website Name Styles */
+    .website-name {
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        padding: 20px;
+        background-color:#001f3f; /* Semi-transparent navy blue */
+        color: white;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color:#004080; /* Semi-transparent navy blue */
+        padding: 10px 20px;
+        position: relative;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .nav-link:hover {
+        background-color:#001f3f; /* Blue on hover */
+        border-radius: 5px;
+    }
+    
+    h1,h2, h3 {
+        text-align: center;
+        color: #001f3f;
+    }
+    h2{
+        color : white;
+    }
+    
+    table {
+        width: 90%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: #ffffff;
+        color: #000000;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        border-radius: 10px;
+        overflow: hidden;
+        box-sizing: border-box;
+    }
+    
+    th, td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #004080;
+    }
+    
+    th {
+        background-color: #004080;
+        color: #ffffff;
+    }
+    
+    tr:nth-child(even) {
+        background-color: #f0f8ff;
+    }
+    
+    tr:hover {
+        background-color: #d0e7ff;
+    }
+</style>
+</head>
+<body>
+    <header>
+        <!-- Website Name Row -->
+        <div class="website-name">SupplyChainX</div>
+
+        <!-- Navigation Links Row -->
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/main/stakedispatch.html" class="nav-link">Home</a>
+                <a href="dispatch.html" class="nav-link">Manage Dispatch</a>
+                <a href="dispatchview.html" class="nav-link">View In Transit</a>
+            </div>
+        </nav>
+    </header>
+
+    <h2>Warehouse Dashboard</h2>
+
+    <!-- List of Stored Items -->
+    <div id="warehouseItems">
+        <h3>Items in Storage</h3>
+        <table border="1" cellpadding="10">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Batch Number</th>
+                    <th>Status</th>
+                    <th>Driver Name</th>
+                    <th>Vehicle Number</th>
+                </tr>
+            </thead>
+            <tbody id="itemList">
+                <!-- Items will be dynamically populated here -->
+            </tbody>
+        </table>
+    </div>
+    <script src="dispatchview.js"></script>
+</body>
+</html>

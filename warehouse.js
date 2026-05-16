@@ -1,13 +1,68 @@
+// Replace with deployed contract address and ABI
+const contractAddress = "0x2Bfe7d57189c0f916f7F6B6Ae2539D01FcFFAF43"; 
+const contractABI = [
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs": [
+            { "internalType": "string", "name": "_productName", "type": "string" },
+            { "internalType": "uint256", "name": "_quantity", "type": "uint256" },
+            { "internalType": "string", "name": "_date", "type": "string" }
+        ],
+        "name": "addFoodGrain",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            { "internalType": "uint256", "name": "batchNumber", "type": "uint256" },
+            { "internalType": "string", "name": "newStatus", "type": "string" }
+        ],
+        "name": "updateStatus",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTotalFoodGrains",
+        "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+        "stateMutability": "view",
+        "type": "function"
+    }
+];
 
-// Fetch and display all items in the warehouse
+let web3;
+let foodGrainContract;
+
+// Initialize Web3 and Smart Contract
+async function initializeWeb3() {
+    if (window.ethereum) {
+        try {
+            await window.ethereum.request({ method: "eth_requestAccounts" }); 
+            web3 = new Web3(window.ethereum);
+            foodGrainContract = new web3.eth.Contract(contractABI, contractAddress);
+            console.log("✅ Web3 and Contract Initialized");
+        } catch (error) {
+            console.error("User denied MetaMask access:", error);
+            alert("Please allow MetaMask access to use this feature.");
+        }
+    } else {
+        alert("MetaMask is not installed. Please install MetaMask.");
+    }
+}
+
+// Call this function on page load
+initializeWeb3();
+
+// Fetch and display warehouse items
 function fetchWarehouseItems() {
     fetch("http://localhost:3000/warehouse-items")
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Failed to fetch warehouse items");
-            }
-            return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
             if (data.success) {
                 displayWarehouseItems(data.items);
@@ -21,91 +76,59 @@ function fetchWarehouseItems() {
         });
 }
 
-
 // Display warehouse items in the table
 function displayWarehouseItems(items) {
     const itemList = document.getElementById("itemList");
-    itemList.innerHTML = ""; // Clear existing rows
+    itemList.innerHTML = ""; // Clear previous rows
 
     items.forEach((item) => {
-        console.log("Item batch number:", item.batch_number);
         const row = document.createElement("tr");
-
-        // Display product details (without barcode)
-        const productNameCell = document.createElement("td");
-        productNameCell.textContent = item.product_name;
-
-        const quantityCell = document.createElement("td");
-        quantityCell.textContent = item.quantity;
-
-        const batchNumberCell = document.createElement("td");
-        batchNumberCell.textContent = item.batch_number;
-
-        const statusCell = document.createElement("td");
-        statusCell.textContent = item.status;
-        
-       // Create action button cell
-       const actionButtonCell = document.createElement("td");
-       const actionButton = document.createElement("button");
-       actionButton.textContent = "Pack for Dispatch";
-       // Check the item's status to determine if the button should be disabled
-        if (item.status === "Packed for Dispatch") {
-            actionButton.disabled = true; // Disable the button if status is 'Delivered'
-        }
-
-       // Add onclick handler for the button
-       actionButton.onclick = () => packForDispatch(item.batch_number);
-
-       // Append the button to the action cell
-       actionButtonCell.appendChild(actionButton);
-
-        // Append all cells to the row
-        row.appendChild(productNameCell);
-        row.appendChild(quantityCell);
-        row.appendChild(batchNumberCell);
-        row.appendChild(statusCell);
-        row.appendChild(actionButtonCell);
-        
-        // Append the row to the table
+        row.innerHTML = `
+            <td>${item.product_name}</td>
+            <td>${item.quantity}</td>
+            <td>${item.batch_number}</td>
+            <td>${item.status}</td>
+            <td>
+                <button ${item.status === "Packed for Dispatch" ? "disabled" : ""} onclick="packForDispatch('${item.batch_number}')">Pack for Dispatch</button>
+            </td>
+        `;
         itemList.appendChild(row);
     });
 }
 
-// refresh the status of warehouse items table.
-function packForDispatch(batchNumber) {
-    console.log("Packing batch:", batchNumber);
-    fetch("http://localhost:3000/pack-dispatch", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ batchNumber }),
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Failed to update batch status");
-            }
-            return response.json();
-        })
-        .then((data) => {
-            if (data.success) {
-                alert(`Batch ${batchNumber} packed for dispatch successfully!`);
-                fetchWarehouseItems(); // Refresh the warehouse items table
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch((error) => {
-            console.error("Error packing batch:", error);
-            alert("Error packing batch");
+// Update status in blockchain and refresh UI
+async function packForDispatch(batchNumber) {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        
+        // Use BigInt to handle long batch numbers without rounding errors
+        const batchId = BigInt(batchNumber).toString(); 
+        const statusText = "Packed for Dispatch";
+
+        console.log(`Pushing to Blockchain: ID ${batchId}`);
+
+        // Call the contract - ensure your ABI has TWO inputs for this function
+        await foodGrainContract.methods.updateStatus(batchId, statusText)
+            .send({ from: accounts[0] });
+
+        // Now update your SQL Database so the UI refreshes
+        const response = await fetch("http://localhost:3000/pack-dispatch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ batchNumber: batchNumber })
         });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(`✅ Blockchain & Database Updated for Batch ${batchNumber}`);
+            fetchWarehouseItems(); // Refresh the table
+        }
+    } catch (error) {
+        console.error("Critical Revert:", error);
+        alert("Transaction Failed. Make sure MetaMask is on the correct Ganache network.");
+    }
 }
-
-
-
-
-
-// Handle manual scanning and render barcode
+// Handle barcode scanning
 function scanItem() {
     const batchNumber = document.getElementById("scanInput").value.trim();
 
@@ -114,19 +137,11 @@ function scanItem() {
         return;
     }
 
-    // Fetch product details based on the scanned batch number
     fetch(`http://localhost:3000/product-details/${batchNumber}`)
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("Product not found");
-            }
-            return response.json();
-        })
+        .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                // Display the scanned item details and generate the barcode
                 displayScannedItem(data.product);
-                
             } else {
                 alert("Product not found");
             }
@@ -135,59 +150,78 @@ function scanItem() {
             console.error("Error fetching product details:", error);
             alert("Error fetching product details");
         });
+        document.getElementById("scanInput").value = "";
 }
 
-// Function to display the scanned product details
+// Display scanned product details
 function displayScannedItem(product) {
-    const productDetails = document.getElementById("scannedItemDetails");
+    const resultSection = document.getElementById("scanResultSection");
+    const infoGrid = document.getElementById("productInfo");
+    const downloadBtn = document.getElementById("downloadBarcodeBtn");
 
-    // Check if the element exists
-    if (!productDetails) {
-        console.error("scannedItemDetails element not found");
-        return;
-    }
+    // Make the hidden result area visible
+    resultSection.style.display = "block";
+    downloadBtn.style.display = "block";
 
-    productDetails.innerHTML = `
-        <p>Product Name: ${product.product_name}</p>
-        <p>Quantity: ${product.quantity}</p>
-        <p>Batch Number: ${product.batch_number}</p>
-        <p>Date: ${product.date}</p>
-        <h3><strong>Generated Barcode: </strong></h3>
+    // Populate the info grid with a cleaner look
+    infoGrid.innerHTML = `
+        <div class="info-item"><span class="info-label">Product:</span> ${product.product_name}</div>
+        <div class="info-item"><span class="info-label">Quantity:</span> ${product.quantity} KG</div>
+        <div class="info-item"><span class="info-label">Batch:</span> ${product.batch_number}</div>
+        <div class="info-item"><span class="info-label">Status:</span> ${product.status}</div>
+        <div class="info-item" style="grid-column: span 2;"><span class="info-label">Arrival:</span> ${new Date(product.date).toLocaleString()}</div>
     `;
 
-    generateBarcode(product.batch_number); // Generate barcode here
-
+    // Generate the barcode
+    generateBarcode(product.batch_number);
 }
 
-// Function to generate and display barcode
+// Generate barcode for the batch number
 function generateBarcode(batchNumber) {
-        
-    // Check if JsBarcode is properly applied to the SVG element
     try {
         JsBarcode("#barcode", batchNumber, {
             format: "CODE128",
             displayValue: true
         });
-
-        
-    const packButton = document.createElement("button");
-    packButton.textContent = "Pack for Dispatch";
-    
-    // Add the onclick handler to call the packForDispatch function
-    packButton.onclick = () => packForDispatch(batchNumber);
-    
-    const barcodeContainer = document.getElementById("barcodeContainer");
-    // Append the button below the product details
-    const breaking = document.createElement("br");
-    barcodeContainer.appendChild(breaking);
-    barcodeContainer.appendChild(packButton);
-
     } catch (error) {
         console.error("Barcode rendering error:", error);
     }
-
 }
 
+function downloadBarcode() {
+    const svg = document.getElementById("barcode");
+    const canvas = document.createElement("canvas");
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    
+    // Create a Blob from the SVG data
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
 
-// Initialize the dashboard by fetching stored items
+    img.onload = function() {
+        // Set canvas size to match the barcode
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        
+        // Fill background white (so it's printable)
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.drawImage(img, 0, 0);
+        
+        // Trigger download
+        const pngUrl = canvas.toDataURL("image/png");
+        const downloadLink = document.createElement("a");
+        downloadLink.href = pngUrl;
+        downloadLink.download = `Label_${document.getElementById("scanInput").value || 'barcode'}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
+
+    img.src = url;
+}
+
+// Initialize warehouse items list on page load
 fetchWarehouseItems();

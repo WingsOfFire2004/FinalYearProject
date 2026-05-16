@@ -1,33 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dispatch Page</title>
+  <meta charset="UTF-8">
+  <title>SupplyChainX | Dispatch Goods</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+        --primary: #004080;
+        --primary-dark: #001f3f;
+        --accent: #00d4ff;
+        --glass: rgba(255, 255, 255, 0.95);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(rgba(0, 31, 63, 0.8), rgba(0, 64, 128, 0.8)), 
+                    url('./images/food.jpg') center/cover no-repeat fixed;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        color: #333;
+    }
+
+    /* --- ENHANCED HEADER --- */
+    header {
+        background: var(--primary-dark);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    .website-name {
+        text-align: center;
+        font-size: 42px; /* Increased Size */
+        font-weight: 800;
+        padding: 25px 20px;
+        color: white;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color:#004080; /* Semi-transparent navy blue */
+        padding: 10px 20px;
+        position: relative;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .nav-link:hover {
+        background-color:#001f3f; /* Blue on hover */
+        border-radius: 5px;
+    }
+
+    /* --- CONTENT --- */
+    .container {
+        flex: 1;
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    h2 { 
+        color: white; 
+        margin-bottom: 30px; 
+        font-size: 28px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .glass-card {
+        background: var(--glass);
+        width: 100%;
+        max-width: 900px;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        border: 1px solid rgba(255,255,255,0.3);
+        margin-bottom: 30px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 25px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th {
+        background-color: var(--primary);
+        color: white;
+        padding: 15px;
+        text-transform: uppercase;
+        font-size: 14px;
+    }
+
+    td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+
+    tr:nth-child(even) { background-color: #f8f9fa; }
+
+    /* --- BUTTONS & FORMS --- */
+    #scanButton {
+        background:  #004080; 
+        color: white;
+        padding: 15px 35px;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 20px auto;
+    }
+
+    #scanButton:hover {
+        background: #003366;;
+        transform: scale(1.01);
+    }
+
+    .form-section {
+        border-top: 2px solid #ddd;
+        padding-top: 30px;
+        margin-top: 20px;
+    }
+
+    /* Modern Details Grid */
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        background: #eef2f7;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        border-left: 5px solid var(--accent);
+    }
+
+    .detail-item strong { display: block; color: var(--primary); font-size: 12px; text-transform: uppercase; }
+    .detail-item span { font-size: 18px; font-weight: 700; }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+    }
+
+    input[type="text"] {
+        padding: 12px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    input[type="text"]:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+    }
+
+    #dispatchButton {
+    /* The specific dark blue from your screenshots */
+    background-color: #004080; 
+    color: white;
+    padding: 12px 40px;
+    border: none;
+    border-radius: 8px; /* Matches the 'Submit to Ledger' button shape */
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: 100%; /* Makes it full width like the 'Submit to Ledger' button */
+    max-width: 400px; /* Limits width to match your input fields */
+    display: block;
+    margin: 0 auto;
+}
+
+#dispatchButton:hover {
+    background-color: #003366; /* Slightly darker shade for the hover effect */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Optional: Style for when the button is disabled (greyed out) */
+#dispatchButton:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+    footer {
+        background: var(--primary-dark);
+        color: rgba(255,255,255,0.6);
+        text-align: center;
+        padding: 20px;
+        font-size: 14px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Dispatch Batches</h1>
+    <header>
+        <div class="website-name">SupplyChainX</div>
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/main/stakedispatch.html" class="nav-link">Home</a>
+                <a href="dispatch.html" class="nav-link">Manage Dispatch</a>
+                <a href="dispatchview.html" class="nav-link">View In Transit</a>
+            </div>
+        </nav>
+    </header>
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Batch Number</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Status</th>
-                <th>Vehicle Number</th>
-                <th>Driver Name</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="dispatchList">
-            <!-- Batches will be dynamically added here -->
-        </tbody>
-    </table>
+    <div class="container">
+        <h2>Sudha Agency Distributors</h2>
 
+        <div class="glass-card">
+            <h3 style="text-align: center; color: var(--primary);">Inventory Available for Dispatch</h3>
+            <table id="batchTable">
+                <thead>
+                    <tr>
+                        <th>Batch Number</th>
+                        <th>Grain Name</th>
+                        <th>Quantity (Kg)</th>
+                    </tr>
+                </thead>
+                <tbody id="itemList"></tbody>
+            </table>
+
+            <center>
+                <button id="scanButton" onclick="redirectToScanner()">
+                    <span>📷</span> Scan Batch Barcode
+                </button>
+            </center>
+
+            <div class="form-section" id="dispatchForm" style="display: none;">
+                <h3 style="text-align: center; margin-bottom: 20px;">Dispatch Transaction</h3>
+
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <strong>Batch</strong>
+                        <span id="scannedBatch">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Product</strong>
+                        <span id="scannedProduct">-</span>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Weight</strong>
+                        <span id="scannedQuantity">-</span>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Driver Full Name</label>
+                    <input type="text" id="driverInput" placeholder="Enter Driver Name" />
+                </div>
+
+                <div class="input-group">
+                    <label>Vehicle Plate Number</label>
+                    <input type="text" id="vehicleInput" placeholder="Enter Vehicle Number" />
+                </div>
+
+                <center>
+                    <button id="dispatchButton" onclick="confirmDispatch()">✅ Confirm & Dispatch</button>
+                </center>
+            </div>
+        </div>
+    </div>
+
+    <footer>&copy; 2026 SupplyChainX | Secure Logistics Ledger</footer>
+
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.36/dist/web3.min.js"></script>
     <script src="dispatch.js"></script>
-    <script>
-        fetchDispatchBatches(); // Initialize the page
-    </script>
 </body>
 </html>

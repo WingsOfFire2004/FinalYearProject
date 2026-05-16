@@ -4,9 +4,284 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hub Page</title>
+    <style>
+            /* General Body and Font Settings */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-image: url('./images/food.jpg'); /* Replace with your background image path */
+        background-size: cover;
+        background-position: center;
+        margin: 0;
+        padding: 0;
+        color: #fff; /* White text for better contrast */
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Ensures the footer stays at the bottom */
+    }
+
+    /* Website Name Styles */
+    .website-name {
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        padding: 20px;
+        background-color:#001f3f; /* Semi-transparent navy blue */
+    }
+
+    /* Navbar Styles */
+    .navbar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color:#004080; /* Semi-transparent navy blue */
+        padding: 10px 20px;
+        position: relative;
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .nav-link:hover {
+        background-color:#001f3f; /* Blue on hover */
+        border-radius: 5px;
+    }
+    
+    h1,h2, h3 {
+        text-align: center;
+        color: #001f3f;
+    }
+        
+        form {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            margin: 20px auto;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        form:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+        }
+        
+        label {
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #004080;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+            color: #000000;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus {
+            border-color: #66b2ff;
+            box-shadow: 0 0 8px rgba(102, 178, 255, 0.8);
+            outline: none;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #004080;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-sizing: border-box;
+        }
+        
+        button:hover {
+            background-color: #66b2ff;
+            color: #001f3f;
+            transform: scale(1.05);
+        }
+        
+        button:disabled {
+            background-color: #a9a9a9;
+            color: #666666;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        #barcodeContainer {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            margin: 20px auto;
+            text-align: center;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #barcodeContainer:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+        }
+        
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #ffffff;
+            color: #000000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        table:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #004080;
+        }
+        
+        th {
+            background-color: #004080;
+            color: #ffffff;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f0f8ff;
+        }
+        
+        tr:hover {
+            background-color: #d0e7ff;
+            transition: background-color 0.3s ease;
+        }
+        
+        #scanSection {
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            width: 90%;
+            margin: 20px auto;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #scanSection:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+        }
+        
+        #scanInput {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #004080;
+            border-radius: 5px;
+            background-color: #f0f8ff;
+            color: #000000;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #scanInput:focus {
+            border-color: #66b2ff;
+            box-shadow: 0 0 8px rgba(102, 178, 255, 0.8);
+            outline: none;
+        }
+        
+        #scannedItemDetails {
+            background-color: #e6f2ff;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        #scannedItemDetails:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        #warehouseItems {
+            margin: 20px auto;
+            width: 90%;
+            max-width: 800px;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #warehouseItems:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.7);
+        }
+        
+        #warehouseItems h3 {
+            text-align: center;
+            color: #004080;
+        } 
+        
+    </style>
 </head>
 <body>
-    <h1>Regional Hub</h1>
+    <header>
+        <!-- Website Name Row -->
+        <div class="website-name">SupplyChainX</div>
+
+        <!-- Navigation Links Row -->
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/main/stakehub.html" class="nav-link">Home</a>
+                <a href="hub.html" class="nav-link">Manage Regional Hub</a>
+            </div>
+        </nav>
+    </header>
+    <h1>Mahalakshmi Provisions</h1>
     <table border="1">
         <thead>
             <tr>
@@ -26,5 +301,9 @@
         </tbody>
     </table>
     <script src="hub.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.2/web3.min.js"></script>
+    <script>
+        fetchInTransitBatches();
+    </script>
 </body>
 </html>

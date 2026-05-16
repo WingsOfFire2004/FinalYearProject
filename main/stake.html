@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupplyChainX | Warehouse Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #004080;
+            --primary-dark: #002d5a;
+            --accent: #00d4ff;
+            --glass: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(rgba(0, 64, 128, 0.7), rgba(0, 64, 128, 0.7)), 
+                        url('./images/food.jpg') center/cover no-repeat fixed;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        nav {
+            background: rgba(0, 64, 128, 0.95);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        nav h1 { color: white; margin: 0; font-size: 1.5rem; letter-spacing: 1px; }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover { opacity: 1; color: var(--accent); }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        .action-card {
+            background: var(--glass);
+            border-radius: 20px;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s, border 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            /* --- New Border Styles --- */
+            border: 2px solid rgba(255, 255, 255, 0.4); /* Thin, semi-transparent white */
+            box-sizing: border-box; /* Ensures border does not change card size */
+        }
+
+        .action-card:hover {
+            transform: translateY(-10px);
+            /* Define border color on hover */
+            border: 2px solid var(--accent); /* Changes border to that bright blue */
+            /* Add a soft 'glow' on hover for interaction */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .card-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+            border-bottom: 4px solid var(--accent);
+        }
+
+        .card-text {
+            padding: 25px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        footer {
+            background: #002d5a;
+            color: rgba(255,255,255,0.7);
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>SupplyChainX</h1>
+        <div class="nav-links">
+            <span style="color: var(--accent); font-size: 0.8rem; margin-right: 15px;">Logged in: Warehouse Node</span>
+            <a href="home.html">Logout</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="dashboard-container">
+            <a href="/procure.html" class="action-card">
+                <img src="./images/form.jpg" alt="Manage" class="card-img">
+                <div class="card-text">Manage Warehouse</div>
+            </a>
+            <a href="/dashboard.html" class="action-card">
+                <img src="./images/track.jpeg" alt="Track" class="card-img">
+                <div class="card-text">Track Logistics</div>
+            </a>
+        </div>
+    </main>
+
+    <footer>&copy; 2026 SupplyChainX | Stakeholder Portal</footer>
+</body>
+</html>

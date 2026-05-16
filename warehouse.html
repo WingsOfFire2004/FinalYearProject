@@ -3,47 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Warehouse Dashboard</title>
+    <title>Warehouse Dashboard | SupplyChainX</title>
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body>
-    <h2>Warehouse Dashboard</h2>
+<style>
+    /* Base Styles */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-image: url('/main/images/food.jpg'); 
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
 
-    <!-- List of Stored Items -->
-    <div id="warehouseItems">
-        <h3>Items in Storage</h3>
-        <table border="1" cellpadding="10">
+    /* Header & Navigation */
+    .website-name {
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        padding: 20px;
+        background-color: #001f3f;
+        letter-spacing: 1px;
+    }
+
+    .navbar {
+        display: flex;
+        justify-content: center;
+        background-color: #004080;
+        padding: 10px 0;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .nav-links {
+        display: flex;
+        gap: 30px;
+    }
+
+    .nav-link {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 8px 15px;
+        transition: 0.3s;
+        border-radius: 5px;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin: 30px 0;
+        font-size: 28px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Main Container (Frosted Glass Look) */
+    .dashboard-container {
+        background-color: #ffffff;
+        color: #333;
+        margin: 20px auto;
+        width: 90%;
+        max-width: 1000px;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        box-sizing: border-box;
+    }
+
+    h3 {
+        color: #004080;
+        margin-top: 0;
+        border-bottom: 2px solid #f0f8ff;
+        padding-bottom: 10px;
+        text-align: left;
+    }
+
+    /* Table Styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 15px;
+    }
+
+    th {
+        background-color: #004080;
+        color: white;
+        padding: 15px;
+        text-align: center;
+    }
+
+    td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    tr:nth-child(even) { background-color: #f8f9fa; }
+    tr:hover { background-color: #e9ecef; }
+
+    /* Input & Button Styling */
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+
+    button {
+        padding: 12px 24px;
+        background-color: #004080;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: 0.3s;
+        width: 100%;
+    }
+
+    button:hover { background-color: #0056b3; }
+    button:disabled {
+        background-color: #adb5bd;
+        cursor: not-allowed;
+    }
+
+    /* Action Button in Table */
+    .btn-action {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    /* Scan Section Layout */
+    .scan-flex {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+    }
+
+    .scan-input-area { flex: 1; min-width: 300px; }
+    .scan-result-area { 
+        flex: 1.2; 
+        min-width: 300px; 
+        background: #f0f8ff; 
+        border-radius: 12px;
+        padding: 20px;
+        display: none; /* Hidden by default */
+        border: 1px dashed #004080;
+    }
+
+    /* Scanned Details */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .info-item {
+        font-size: 14px;
+        padding: 5px 0;
+        border-bottom: 1px solid #d0e7ff;
+    }
+
+    .info-label { font-weight: bold; color: #004080; }
+
+    /* Barcode Area */
+    #barcodeContainer {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        margin-top: 15px;
+        box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    #downloadBarcodeBtn {
+        background-color: #28a745;
+        margin-top: 15px;
+    }
+
+    #downloadBarcodeBtn:hover { background-color: #218838; }
+
+</style>
+<body>
+    <header>
+        <div class="website-name">SupplyChainX</div>
+        <nav class="navbar">
+            <div class="nav-links">
+                <a href="/main/stake.html" class="nav-link">Home</a>
+                <a href="procure.html" class="nav-link">Add Item</a>
+                <a href="warehouse.html" class="nav-link">View Warehouse</a>
+            </div>
+        </nav>
+    </header>
+
+    <h2>Wholesale Grain Market Dashboard</h2>
+
+    <div class="dashboard-container">
+        <h3><i class="fas fa-warehouse"></i> Items in Storage</h3>
+        <table>
             <thead>
                 <tr>
                     <th>Product Name</th>
-                    <th>Quantity</th>
+                    <th>Quantity (KG)</th>
                     <th>Batch Number</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="itemList">
-                <!-- Items will be dynamically populated here -->
-            </tbody>
+                </tbody>
         </table>
     </div>
 
-    <!-- Scan Section -->
-    <div id="scanSection" style="margin-top: 20px;">
-        <h3>Scan Batch Number</h3>
-    <input type="text" id="scanInput" placeholder="Enter Batch Number" />
-    <button onclick="scanItem()">Scan</button>
+    <div class="dashboard-container">
+        <h3><i class="fas fa-barcode"></i> Track & Label Batch</h3>
+        <div class="scan-flex">
+            <div class="scan-input-area">
+                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Enter Batch Number:</label>
+                <input type="text" id="scanInput" placeholder="e.g. 569298850540803" />
+                <button onclick="scanItem()"><i class="fas fa-search"></i> Scan & Verify</button>
+            </div>
 
-    <div id="scannedItemDetails">
-        <!-- Scanned product details will be displayed here -->
+            <div id="scanResultSection" class="scan-result-area">
+                <h4 style="margin-top: 0; color: #004080;">Verification Result</h4>
+                <div id="productInfo" class="info-grid">
+                    </div>
+
+                <div id="barcodeContainer">
+                    <svg id="barcode"></svg>
+                </div>
+
+                <button id="downloadBarcodeBtn" onclick="downloadBarcode()" style="display: none;">
+                    <i class="fas fa-download"></i> Download Shipping Label
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div id="barcodeContainer">
-        <!-- Barcode will be displayed here -->
-        <svg id="barcode"></svg>
-    </div>
-    </div>
+    <footer style="text-align: center; padding: 20px; font-size: 14px; opacity: 0.8;">
+        © 2026 SupplyChainX | Secure Blockchain Logistics
+    </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.8.2/web3.min.js"></script>
     <script src="warehouse.js"></script>
 </body>
 </html>

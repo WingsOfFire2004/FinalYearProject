@@ -3,58 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Tracking Dashboard</title>
+    <title>SupplyChainX | Order Tracking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-        }
-        .dashboard {
-            width: 80%;
-            margin: auto;
-        }
-        .batch-item {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .batch-item h3 {
-            margin-bottom: 10px;
-        }
-        .status {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-image: url('./images/food.jpg'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            color: #fff;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .status div {
-            flex: 1;
+
+        .website-name {
             text-align: center;
-        }
-        .current-stage {
-            color: green;
+            font-size: 32px;
             font-weight: bold;
+            padding: 20px;
+            background-color: #001f3f;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
+
+       h1, h2, h3 {
+            text-align: center;
+            /* Using the Navy Blue from your buttons for consistency */
+            color: #004080; 
+            /* Adding a subtle text-shadow makes it readable over busy backgrounds */
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+            font-weight: bold;
+            margin-top: 30px;
+        }
+
+        /* Specific styling for the main Dashboard titles */
+        h1 {
+            font-size: 36px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .dashboard {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Input Section Styling */
+        #inputSection {
+            background: #f8fbff;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #d0e7ff;
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #004080;
+            font-size: 1.1rem;
+        }
+
+        .search-group {
+            display: flex;
+            width: 100%;
+            gap: 10px;
+        }
+
+        #batchInput {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #004080;
+            border-radius: 10px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        #batchInput:focus {
+            box-shadow: 0 0 10px rgba(0, 64, 128, 0.2);
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #004080;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* --- Timeline Stepper Styling --- */
+        .timeline {
+            position: relative;
+            padding-left: 50px;
+            margin-top: 30px;
+        }
+
+        /* Vertical Line */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            padding-left: 20px;
+        }
+
+        /* Circle Icons */
+        .timeline-icon {
+            position: absolute;
+            left: -48px;
+            top: 0;
+            width: 36px;
+            height: 36px;
+            background: #fff;
+            border: 4px solid #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+            z-index: 2;
+            transition: 0.4s;
+        }
+
+        /* Content Card */
+        .timeline-content {
+            background: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .timeline-content h4 {
+            margin: 0 0 5px;
+            color: #555;
+            font-size: 1.1rem;
+        }
+
         .timestamp {
-            color: gray;
-            font-size: 0.9em;
+            font-size: 0.85rem;
+            color: #888;
+            margin: 0;
         }
+
+        /* Active State Highlights */
+        .timeline-item.active .timeline-icon {
+            border-color: #28a745;
+            color: #28a745;
+            background: #f0fff4;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+
+        .timeline-item.active .timeline-content {
+            border-left: 5px solid #28a745;
+            background: #f9fffb;
+        }
+
+        .timeline-item.active h4 { color: #1e7e34; }
+
+        .batch-summary {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #004080;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #f0f8ff;
+            padding-bottom: 10px;
+        }
+        .product-summary-card {
+    background: #f0f8ff;
+    border: 1px solid #004080;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #d0e7ff;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+}
+
+.summary-header h3 { margin: 0; color: #004080; font-size: 1.2rem; }
+
+.batch-badge {
+    background: #004080;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.info-item { font-size: 0.95rem; }
+.status-text { color: #28a745; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <h1>Order Tracking Dashboard</h1>
+    <header class="website-name">SupplyChainX</header>
 
-        <!-- Input section for batch number -->
+    <h1>Order Tracking Portal</h1>
+
+    <div class="dashboard">
         <div id="inputSection">
-            <label for="batchInput">Enter Batch Number:</label>
-            <input type="text" id="batchInput" placeholder="Enter Batch Number">
-            <button onclick="handleFetchBatch()">Track</button>
+            <label for="batchInput"><i class="fas fa-barcode"></i> Trace Your Batch</label>
+            <div class="search-group">
+                <input type="text" id="batchInput" placeholder="Enter 15-digit Batch Number">
+                <button onclick="handleFetchBatch()">Track Now</button>
+            </div>
         </div>
 
         <div id="batchDetails">
-            <!-- Dynamic content will be added here -->
+            <div style="text-align: center; color: #999; padding: 20px;">
+                <i class="fas fa-truck-loading fa-3x" style="margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                Ready to track your blockchain assets.
+            </div>
         </div>
-
     </div>
 
     <script src="dashboard.js"></script>
